@@ -28,17 +28,29 @@
 #include "driverlib/debug.h"
 #include "driverlib/gpio.h"
 #include "driverlib/sysctl.h"
+#include "driverlib/interrupt.h"
+#include "Lib/BSP.h"
 
-//*****************************************************************************
-//
-//! \addtogroup example_list
-//! <h1>Blinky (blinky)</h1>
-//!
-//! A very simple example that blinks the on-board LED using direct register
-//! access.
-//
-//*****************************************************************************
+//color constants
+#define BGCOLOR     LCD_BLACK
+#define AXISCOLOR   LCD_ORANGE
+#define MAGCOLOR    LCD_YELLOW
+#define EWMACOLOR   LCD_CYAN
+#define SOUNDCOLOR  LCD_CYAN
+#define LIGHTCOLOR  LCD_RED
+#define TEMPCOLOR   LCD_LIGHTGREEN
+#define TOPTXTCOLOR LCD_WHITE
+#define TOPNUMCOLOR LCD_ORANGE
 
+
+#define ACCELERATION_MAX 1400
+#define ACCELERATION_MIN 600
+#define SOUND_MAX 900
+#define SOUND_MIN 300
+#define LIGHT_MAX 2000
+#define LIGHT_MIN 0
+#define TEMP_MAX 1023
+#define TEMP_MIN 0
 //*****************************************************************************
 //
 // The error routine that is called if the driver library encounters an error.
@@ -57,11 +69,27 @@ __error__(char *pcFilename, uint32_t ui32Line)
 // Blink the on-board LED.
 //
 //*****************************************************************************
+void Blink_LED(void);
+void LED_Init(void);
+
 int
 main(void)
 {
-    volatile uint32_t ui32Loop;
 
+    LED_Init();
+    BSP_LCD_Init();
+    BSP_LCD_FillScreen(BSP_LCD_Color565(0, 0, 0));
+    IntMasterEnable();
+    while(1)
+    {
+        Blink_LED();
+//        BSP_LCD_Drawaxes(AXISCOLOR, BGCOLOR, "Time", "Mag", MAGCOLOR, "Ave", EWMACOLOR, ACCELERATION_MAX, ACCELERATION_MIN);
+
+    }
+}
+
+void LED_Init(void)
+{
     //
     // Enable the GPIO port that is used for the on-board LED.
     //
@@ -79,34 +107,32 @@ main(void)
     // enable the GPIO pin for digital function.
     //
     GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_3);
+}
+
+void Blink_LED(void)
+{
+    volatile uint32_t ui32Loop;
+    //
+    // Turn on the LED.
+    //
+    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, GPIO_PIN_3);
 
     //
-    // Loop forever.
+    // Delay for a bit.
     //
-    while(1)
+    for(ui32Loop = 0; ui32Loop < 200000; ui32Loop++)
     {
-        //
-        // Turn on the LED.
-        //
-        GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, GPIO_PIN_3);
+    }
 
-        //
-        // Delay for a bit.
-        //
-        for(ui32Loop = 0; ui32Loop < 200000; ui32Loop++)
-        {
-        }
+    //
+    // Turn off the LED.
+    //
+    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0x0);
 
-        //
-        // Turn off the LED.
-        //
-        GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0x0);
-
-        //
-        // Delay for a bit.
-        //
-        for(ui32Loop = 0; ui32Loop < 200000; ui32Loop++)
-        {
-        }
+    //
+    // Delay for a bit.
+    //
+    for(ui32Loop = 0; ui32Loop < 200000; ui32Loop++)
+    {
     }
 }

@@ -151,14 +151,30 @@
 // J4.35 nothing                         {TM4C123 PC6, MSP432 P6.7}
 
 #include <stdint.h>
-#include "BSP.h"
-#include "../inc/tm4c123gh6pm.h"
+#include "stdbool.h"
+#include "../Lib/BSP.h"
+#include "../Lib/tm4c123gh6pm.h"
+#include "driverlib/interrupt.h"
 
-void DisableInterrupts(void); // Disable interrupts
-void EnableInterrupts(void);  // Enable interrupts
-long StartCritical (void);    // previous I bit, disable interrupts
-void EndCritical(long sr);    // restore I bit to previous value
-void WaitForInterrupt(void);  // low power mode
+#define DELAY 0x80
+
+void DisableInterrupts(void)    // Disable interrupts
+{
+    IntMasterDisable();
+};
+void EnableInterrupts(void)
+{
+    IntMasterEnable();
+
+};  // Enable interrupts
+long StartCritical (void)
+{
+    DisableInterrupts();
+};    // previous I bit, disable interrupts
+void EndCritical(long sr)
+{
+    EnableInterrupts();
+};    // restore I bit to previous value
 
 static uint32_t ClockFrequency = 16000000; // cycles/second
 
@@ -1036,36 +1052,12 @@ uint8_t static writedata(uint8_t c) {
 }
 
 
-// delay function from sysctl.c
-// which delays 3.3*ulCount cycles
-// ulCount=23746 => 1ms = 23746*3.3cycle/loop/80,000
-#ifdef __TI_COMPILER_VERSION__
-  //Code Composer Studio Code
-  void parrotdelay(uint32_t ulCount){
-  __asm (  "    subs    r0, #1\n"
-      "    bne     Delay\n"
-      "    bx      lr\n");
-}
-
-#else
-  //Keil uVision Code
-  __asm void
-  parrotdelay(uint32_t ulCount)
-  {
-     subs    r0, #1
-    bne     parrotdelay
-    bx      lr
-  }
-
-#endif
-
-
 // Rather than a bazillion writecommand() and writedata() calls, screen
 // initialization commands and arguments are organized in these tables
 // stored in ROM.  The table may look bulky, but that's mostly the
 // formatting -- storage-wise this is hundreds of bytes more compact
 // than the equivalent code.  Companion function follows.
-#define DELAY 0x80
+
 //static const uint8_t
 //  Bcmd[] = {                  // Initialization commands for 7735B screens
 //    18,                       // 18 commands in list:
@@ -2286,10 +2278,7 @@ uint32_t BSP_Time_Get(void){
 // Inputs: n  number of 1 msec to wait
 // Outputs: none
 void BSP_Delay1ms(uint32_t n){
-  while(n){
-    parrotdelay(23746);    // 1 msec, tuned at 80 MHz, originally part of LCD module
-    n--;
-  }
+    SysCtlDelay(n * (SysCtlClockGet()/3000));
 }
 
 // There are two I2C devices on the Educational BoosterPack MKII:
