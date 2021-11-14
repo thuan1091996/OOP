@@ -1,27 +1,17 @@
-//*****************************************************************************
-//
-// blinky.c - Simple example to blink the on-board LED.
-//
-// Copyright (c) 2012-2017 Texas Instruments Incorporated.  All rights reserved.
-// Software License Agreement
-// 
-// Texas Instruments (TI) is supplying this software for use solely and
-// exclusively on TI's microcontroller products. The software is owned by
-// TI and/or its suppliers, and is protected under applicable copyright
-// laws. You may not combine this software with "viral" open-source
-// software in order to form a larger program.
-// 
-// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-// DAMAGES, FOR ANY REASON WHATSOEVER.
-// 
-// This is part of revision 2.1.4.178 of the EK-TM4C123GXL Firmware Package.
-//
-//*****************************************************************************
 
+/*******************************************************************************
+* Title                 :   Oriented Programming practices
+* Filename              :   main.c
+* Author                :   TRAN MINH THUAN
+* Origin Date           :   11/14/2021
+* Version               :   1.0.0
+* Compiler              :   CCS version 11.
+* Target                :   TM4C123
+*******************************************************************************/
+
+/******************************************************************************
+* Includes
+*******************************************************************************/
 #include <stdint.h>
 #include <stdbool.h>
 #include "inc/hw_memmap.h"
@@ -31,7 +21,9 @@
 #include "driverlib/interrupt.h"
 #include "Lib/BSP.h"
 
-//color constants
+/******************************************************************************
+* Module Preprocessor Constants
+*******************************************************************************/
 #define BGCOLOR     LCD_BLACK
 #define AXISCOLOR   LCD_ORANGE
 #define MAGCOLOR    LCD_YELLOW
@@ -42,7 +34,6 @@
 #define TOPTXTCOLOR LCD_WHITE
 #define TOPNUMCOLOR LCD_ORANGE
 
-
 #define ACCELERATION_MAX 1400
 #define ACCELERATION_MIN 600
 #define SOUND_MAX 900
@@ -51,29 +42,29 @@
 #define LIGHT_MIN 0
 #define TEMP_MAX 1023
 #define TEMP_MIN 0
-//*****************************************************************************
-//
-// The error routine that is called if the driver library encounters an error.
-//
-//*****************************************************************************
-#ifdef DEBUG
-void
-__error__(char *pcFilename, uint32_t ui32Line)
-{
-    while(1);
-}
-#endif
+/******************************************************************************
+* Module Preprocessor Macros
+*******************************************************************************/
 
-//*****************************************************************************
-//
-// Blink the on-board LED.
-//
-//*****************************************************************************
+/******************************************************************************
+* Module Typedefs
+*******************************************************************************/
+
+/******************************************************************************
+* Module Variable Definitions
+*******************************************************************************/
+
+/******************************************************************************
+* Function Prototypes
+*******************************************************************************/
 void Blink_LED(void);
 void LED_Init(void);
 
-int
-main(void)
+
+/******************************************************************************
+* Function Definitions
+*******************************************************************************/
+int main(void)
 {
 
     LED_Init();
@@ -83,7 +74,6 @@ main(void)
     while(1)
     {
         Blink_LED();
-//        BSP_LCD_Drawaxes(AXISCOLOR, BGCOLOR, "Time", "Mag", MAGCOLOR, "Ave", EWMACOLOR, ACCELERATION_MAX, ACCELERATION_MIN);
 
     }
 }
@@ -109,6 +99,11 @@ void LED_Init(void)
     GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_3);
 }
 
+//*****************************************************************************
+//
+// Blink the on-board LED.
+//
+//*****************************************************************************
 void Blink_LED(void)
 {
     volatile uint32_t ui32Loop;
@@ -135,4 +130,14 @@ void Blink_LED(void)
     for(ui32Loop = 0; ui32Loop < 200000; ui32Loop++)
     {
     }
+}
+
+//*****************************************************************************
+//
+// The error routine that is called if the driver library encounters an error.
+//
+//*****************************************************************************
+void __error__(char *pcFilename, uint32_t ui32Line)
+{
+    while(1);
 }
