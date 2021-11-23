@@ -1,18 +1,18 @@
 /****************************************************************************
 * Title                 :   ADC Application
 * Filename              :   adc_app.h
-* Author                :   JWB
+* Author                :   Itachi
 * Origin Date           :   06/07/2012
 * Version               :   1.0.0
-* Compiler              :   Microchip C30 v3.30c
-* Target                :   PIC24FJ64GB004
+* Compiler              :   TI
+* Target                :   TM4C123
 * Notes                 :   None
 *****************************************************************************/
 
 /*************** INTERFACE CHANGE LIST **************************************
 *
-*    Date    Software Version    Initials   Description
-*  08/17/13    XXXXXXXXXXX         JWB      Interface Created.
+*    Date       Software Version    Initials        Description
+*  Nov 22, 2021    XXXXXXXXXXX      Itachi      Interface Created.
 *
 *****************************************************************************/
 /** \file tsk.h
@@ -61,15 +61,8 @@
 /******************************************************************************
 * Function Prototypes
 *******************************************************************************/
-#ifdef __cplusplus
-extern "C"{
-#endif
 
-void Function(void);
 
-#ifdef __cplusplus
-} // extern "C"
-#endif
 
 #endif /*File_H_*/
 

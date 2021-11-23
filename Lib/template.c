@@ -1,21 +1,20 @@
-/*******************************************************************************
-* Title                 :   System Initialization
-* Filename              :   sys_init.c
-* Author                :   JWB
-* Origin Date           :   04/23/2012
+/****************************************************************************
+* Title                 :   Logger
+* Filename              :   logger.h
+* Author                :   Itachi
+* Origin Date           :   Nov 22, 2021
 * Version               :   1.0.0
-* Compiler              :   Microchip C30 v3.30c
-* Target                :   PIC24FJ64GB004
+* Compiler              :   TI
+* Target                :   TM4C123
 * Notes                 :   None
-*******************************************************************************/
+*****************************************************************************/
 
-/*************** MODULE REVISION LOG ******************************************
+/*************** INTERFACE CHANGE LIST **************************************
 *
-*    Date    Software Version    Initials   Description
-*  XX/XX/XX    XXXXXXXXXXX         JWB      Module Created.
+*    Date       Software Version    Initials        Description
+*  Nov 22, 2021    XXXXXXXXXXX      Itachi      Interface Created.
 *
-*******************************************************************************/
-
+*****************************************************************************/
 /** \file XXX.c
  * \brief This module contains the
  */
