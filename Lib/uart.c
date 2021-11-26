@@ -63,16 +63,17 @@ void uart0_mspinit(void)
 /******************************************************************************
 * Function Definitions
 *******************************************************************************/
-void uart_ctor(uart_t* me, uint8_t instace, uart_config_t* p_config)
+void UART_Ctor(uart_t* me, uint8_t instace, uart_config_t* p_config)
 {
 	me->instance		= instace;
 	me->config.baudrate = p_config->baudrate;
 	me->config.datalen	= p_config->datalen;
 	me->config.parity	= p_config->parity;
 	me->config.stop_bit	= p_config->stop_bit;
+	UART_Init(me);
 }
 
-bool uart_init(uart_t* me)
+bool UART_Init(uart_t* me)
 {
 	UARTStdioConfig(me->instance, me->config.baudrate, SysCtlClockGet() );
 	switch (me->instance)
@@ -92,13 +93,13 @@ bool uart_init(uart_t* me)
 	return true;
 }
 
-bool uart_send(uart_t* p_uart,  const uint8_t* p_data, uint32_t len)
+bool UART_Send(uart_t* p_uart,  const uint8_t* p_data, uint32_t len)
 {
 	UARTwrite((const char*)p_data, len);
 	return true;
 }
 
-bool uart_recv(uart_t* p_uart,  uint8_t* p_buffer, uint32_t len)
+bool UART_Recv(uart_t* p_uart,  uint8_t* p_buffer, uint32_t len)
 {
 	UARTgets((char*)p_buffer, len);
 	return true;

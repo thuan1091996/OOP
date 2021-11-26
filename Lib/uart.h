@@ -95,10 +95,10 @@ typedef struct
 /******************************************************************************
 * Function Prototypes
 *******************************************************************************/
-void uart_ctor(uart_t* p_uart, uint8_t instace, uart_config_t* p_config);
-bool uart_init(uart_t* p_uart);
-bool uart_send(uart_t* p_uart, const uint8_t* p_data, uint32_t len);
-bool uart_recv(uart_t* p_uart, uint8_t* p_buffer, uint32_t len);
+void UART_Ctor(uart_t* p_uart, uint8_t instace, uart_config_t* p_config);
+bool UART_Init(uart_t* p_uart);
+bool UART_Send(uart_t* p_uart, const uint8_t* p_data, uint32_t len);
+bool UART_Recv(uart_t* p_uart, uint8_t* p_buffer, uint32_t len);
 
 #endif /*UART_H*/
 
