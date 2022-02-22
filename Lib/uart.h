@@ -73,6 +73,14 @@ typedef enum
 	PARITY_ODD
 }eUART_parity_t;
 
+typedef enum
+{
+	STATUS_RESET=0,
+	STATUS_RDY,
+	STATUS_BUSY,
+	STATUS_ERR
+}eUART_status_t;
+
 typedef struct
 {
 	eUART_data_len_t		datalen;
@@ -81,9 +89,11 @@ typedef struct
 	uint32_t				baudrate;
 }uart_config_t;
 
+
 typedef struct
 {
 	uint8_t 				instance;
+	eUART_status_t			status;
 	uart_config_t  			config;
 }uart_t;
 

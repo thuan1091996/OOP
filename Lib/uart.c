@@ -66,6 +66,7 @@ void uart0_mspinit(void)
 void UART_Ctor(uart_t* me, uint8_t instace, uart_config_t* p_config)
 {
 	me->instance		= instace;
+	me->status			= STATUS_RESET;
 	me->config.baudrate = p_config->baudrate;
 	me->config.datalen	= p_config->datalen;
 	me->config.parity	= p_config->parity;
@@ -81,6 +82,7 @@ bool UART_Init(uart_t* me)
 		case UART0_INSTANCE:
 		{
 			uart0_mspinit();
+			me->status = STATUS_RDY;
 		}
 			break;
 		case UART1_INSTANCE:
@@ -95,8 +97,13 @@ bool UART_Init(uart_t* me)
 
 bool UART_Send(uart_t* p_uart,  const uint8_t* p_data, uint32_t len)
 {
-	UARTwrite((const char*)p_data, len);
-	return true;
+	if(p_uart->status == STATUS_RDY)
+	{
+		UARTwrite((const char*)p_data, len);
+		//TODO:  If fail -> update status
+		return true;
+	}
+	return false;
 }
 
 bool UART_Recv(uart_t* p_uart,  uint8_t* p_buffer, uint32_t len)

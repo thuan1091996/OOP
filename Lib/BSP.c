@@ -155,6 +155,7 @@
 #include "../Lib/BSP.h"
 #include "../Lib/tm4c123gh6pm.h"
 #include "driverlib/interrupt.h"
+#include "driverlib/sysctl.h"
 
 #define DELAY 0x80
 
@@ -169,7 +170,9 @@ void EnableInterrupts(void)
 };  // Enable interrupts
 long StartCritical (void)
 {
+    long check_me=0;
     DisableInterrupts();
+    return check_me;
 };    // previous I bit, disable interrupts
 void EndCritical(long sr)
 {
@@ -2243,7 +2246,7 @@ void BSP_PeriodicTask_StopC(void){
 // Output: none
 // Assumes: BSP_Clock_InitFastest() has been called
 //          so clock = 80/80 = 1 MHz
-void BSP_Time_Init(void){long sr;
+void BSP_Time_Init(void){long sr=0;
   // ***************** Wide Timer5B initialization *****************
   SYSCTL_RCGCWTIMER_R |= 0x20;     // activate clock for Wide Timer5
   while((SYSCTL_PRWTIMER_R&0x20) == 0){};// allow time for clock to stabilize

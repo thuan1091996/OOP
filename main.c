@@ -14,12 +14,18 @@
 *******************************************************************************/
 #include <stdint.h>
 #include <stdbool.h>
+#include <string.h>
 #include "inc/hw_memmap.h"
 #include "driverlib/debug.h"
 #include "driverlib/gpio.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/interrupt.h"
 #include "Lib/BSP.h"
+
+#include "Lib/oop/shape.h"
+#include "Lib/oop/rect.h"
+#include "Lib/logger.h"
+#include "Lib/log_uart.h"
 
 /******************************************************************************
 * Module Preprocessor Constants
@@ -53,6 +59,25 @@
 /******************************************************************************
 * Module Variable Definitions
 *******************************************************************************/
+#if 0
+
+#include "Lib/uart.h"
+uart_t uart0;
+uart_config_t uart0_config =
+{
+		.baudrate	= 9600,
+		.datalen	= DATA_LEN_8B,
+		.parity		= PARITY_NONE,
+		.stop_bit	= STOP_BIT_1B
+};
+const uint8_t send_me[]="Hello \n\n";
+uart_ctor(&uart0, UART0_INSTANCE, &uart0_config);
+uart_init(&uart0);
+while(1)
+uart_send(&uart0, send_me, strlen(send_me));
+#endif  /* End of 0 */
+
+LogUART_t LogUART0;
 
 /******************************************************************************
 * Function Prototypes
@@ -61,11 +86,23 @@ void Blink_LED(void);
 void LED_Init(void);
 
 
+
+
+Rectangle rec1, rec2;
+Shape s1;
 /******************************************************************************
 * Function Definitions
 *******************************************************************************/
 int main(void)
 {
+	LogUART_Ctor(&LogUART0);
+
+//	Log_Msg(&LogUART0, LOGSYSTEM_APP, "Hi \n\n", strlen("Hi \n\n"));
+
+//	LogUART_Send(&LogUART0, "Hi \n\n", strlen("Hi \n\n"));
+
+//    Shape_ctor(&s1, 9, 9);
+//    Shape_draw(&s1);
 
     LED_Init();
     BSP_LCD_Init();
@@ -74,7 +111,6 @@ int main(void)
     while(1)
     {
         Blink_LED();
-
     }
 }
 

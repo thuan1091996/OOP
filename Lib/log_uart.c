@@ -16,79 +16,66 @@
 *
 *****************************************************************************/
 
-#ifndef LIB_LOGGER_H_
-#define LIB_LOGGER_H_
 
 /******************************************************************************
 * Includes
 *******************************************************************************/
-#include "stdbool.h"
-#include "stdio.h"
-#include "stdint.h"
-#include "driverlib/debug.h"
-/******************************************************************************
-* Preprocessor Constants
-*******************************************************************************/
-
+#include "log_uart.h"
 
 /******************************************************************************
-* Configuration Constants
+* Module Preprocessor Constants
+*******************************************************************************/
+#define LOG_UART_BAUDRATE		9600
+#define LOG_UART_DATALEN		DATA_LEN_8B
+#define LOG_UART_PARITY			PARITY_NONE
+#define LOG_UART_STOPBIT		STOP_BIT_1B
+/******************************************************************************
+* Module Preprocessor Macros
 *******************************************************************************/
 
 /******************************************************************************
-* Macros
+* Module Typedefs
 *******************************************************************************/
-
 
 /******************************************************************************
-* Typedefs
+* Module Variable Definitions
 *******************************************************************************/
-typedef enum
-{
-	LOGLEVEL_DEBUG=0,
-	LOGLEVEL_WARN,
-	LOGLEVEL_ERR,
-	LOGLEVEL_FATAL,
-	LOGLEVEL_NONE,
-}eLogLevel_t;
-
-typedef enum
-{
-	LOGSYSTEM_COMM=0,
-	LOGSYSTEM_APP,
-	LOGSYSTEM_TASK,
-	LOGSYSTEM_PERIPH,
-	LOGSYSTEM_DEVICE,
-	LOGSYSTEM_MAX
-}eLogSubSystem_t;			//TODO: Where to use
-
-
-typedef struct
-{
-	struct Log_vtable_t const 	*p_vtb;
-	bool 						b_log_on;			/* If == 0, will not log message */
-	eLogLevel_t					e_cur_log_level;	/* Which subsystem has lower level than current level will not be logged out */
-	eLogLevel_t 				e_log_list[LOGSYSTEM_MAX];
-}LogObj_t;
-
-struct Log_vtable_t{
-	bool (*Log_SendMsg)(LogObj_t* p_me, char* msg, uint32_t msg_len);
-};	/* Virtual table */
-
-/******************************************************************************
-* Variables
-*******************************************************************************/
-
 
 /******************************************************************************
 * Function Prototypes
 *******************************************************************************/
-void Log_GlobalOn(LogObj_t* const p_logger);
-void Log_GlobalOff(LogObj_t* const p_logger);
-void Log_Ctor(LogObj_t* const p_logger, bool is_on, eLogLevel_t default_log_level);
-bool Log_Sendmsg(LogObj_t* const p_logger, char *msg, uint32_t msg_len);
-bool Log_Msg(LogObj_t* const p_logger, eLogSubSystem_t sys, char *msg, uint32_t msg_len);
-void Log_SetOutputLevel(LogObj_t* const p_logger, eLogSubSystem_t sys, eLogLevel_t level);
 
+/******************************************************************************
+* Function Definitions
+*******************************************************************************/
+void LogUART_Ctor(LogUART_t* me)
+{
+	/* Base class constructor */
+	Log_Ctor(&me->super, 0, LOGLEVEL_DEBUG); /* Log all */
 
-#endif /* LIB_LOGGER_H_ */
+	/* UART's side constructor */
+	static uart_config_t config_def =
+	{
+		.baudrate 	= LOG_UART_BAUDRATE,
+		.datalen	= LOG_UART_DATALEN,
+		.parity		= LOG_UART_PARITY,
+		.stop_bit	= LOG_UART_STOPBIT
+	};
+
+	static uart_t uart0_obj;
+	me->p_uart_driver = &uart0_obj;
+	uart0_obj.instance = UART0_INSTANCE;
+	UART_Ctor(&uart0_obj, uart0_obj.instance, &config_def);
+	/* Usage of polymorphism overwrite  */
+	static struct Log_vtable_t const LogUART_vtable =
+	{
+		&LogUART_Send,
+	};
+	me->super.p_vtb = &LogUART_vtable;
+}
+
+bool LogUART_Send(LogUART_t* me, uint8_t* p_msg, uint32_t msg_len)
+{
+	return UART_Send(me->p_uart_driver, p_msg, msg_len);
+}
+/*************** END OF FUNCTIONS ***************************************************************************/
